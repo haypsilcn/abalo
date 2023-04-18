@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browser</title>
+</head>
+<body>
+
+<script>
+    "use strict"
+
+    if (navigator.userAgent.match(/Edg/i))
+        console.log("edge")
+    else if (navigator.userAgent.match(/chrome|chromium|crios/i))
+        console.log("chrome")
+    else if (navigator.userAgent.match(/firefox|fxios/i))
+        console.log("firefox")
+    else if (navigator.userAgent.match(/safari/i))
+        console.log("safari")
+    else if (navigator.userAgent.match(/opr\//i))
+        console.log("opera")
+    else
+        console.log("no browser detected")
+
+</script>
+</body>
+</html>
