@@ -95,8 +95,7 @@ class ArticleController extends Controller
         $images = $this->articleImg();
 
         return view("article/view", [
-            "results" => $results,
-            "images" => $images,
+            "results" => $results
             ]);
     }
 }
