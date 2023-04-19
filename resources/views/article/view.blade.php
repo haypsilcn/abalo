@@ -44,8 +44,7 @@
                 <td> {{ $result->description }} </td>
                 <td> {{ $result->user->name }} </td>
                 <td> {{ $result->created_at }} </td>
-                // TODO: cannot add to cart when description already exist ""
-                <td><input type="button" id="input{{ $result->id }}" value="+"
+                <td><input type="button" value="+"
                            onclick='shoppingCart({{ $result->id }},
                            "{{ $result->name }}",
                            {{ $result->price }},

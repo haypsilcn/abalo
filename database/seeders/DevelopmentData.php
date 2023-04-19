@@ -19,12 +19,9 @@ class DevelopmentData extends Seeder
         Article::truncate();
         Category::truncate();
 
-
-
         $userCsvFile = fopen(base_path("database/data/csv/user.csv"), "r");
         $articleCsvFile = fopen(base_path("database/data/csv/article.csv"), "r");
         $categoryCsvFile = fopen(base_path("database/data/csv/articlecategory.csv"), "r");
-
 
         // importing user.csv
         $firstLine = true;
@@ -46,7 +43,7 @@ class DevelopmentData extends Seeder
                 Article::create([
                     "name" => $data["1"],
                     "price" => (int)$data["2"],
-                    "description" => $data["3"],
+                    "description" => str_replace('"', "´´", $data["3"]), // avoid double quote bug when later parsing in frontend
                     "creator_id" => $data["4"],
                     // avoiding datetime field overflow error
                     // convert date in csv from string to timestamp type

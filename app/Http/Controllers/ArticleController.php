@@ -3,16 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ArticleController extends Controller
 {
-    public function connectTable() {
-        return DB::table("results");
-    }
-
     public function articleImg() {
 
         $files = \File::files("img/articelimages");
@@ -31,18 +25,10 @@ class ArticleController extends Controller
         // get keyword from input with name="search" from article.blade.php
         $keyword = $request->search;
 
-        // WHY NOT WORKING? ERROR: UNDEFINED PROPERTY
-        /*$results = $this->connectTable()
-            ->select("results.*")
-            ->join("users", "results.creator_id", "=", "users.id")
-            ->where("name", "like", "%".$keyword."%")
-            ->get();*/
-
         // ilike for insensitive case
         $results = Article::query()
             ->where("name", "ilike", "%".strtolower($keyword)."%")
             ->get();
-
 
         $images = $this->articleImg();
 
@@ -85,14 +71,13 @@ class ArticleController extends Controller
                     "creator_id" => $creator,
                     "created_at" => now()
                 ]);
-            return redirect()->route("articleSearch");
+            return redirect()->route("articleView");
 
         }
     }
 
     public function view() {
         $results = Article::all();
-        $images = $this->articleImg();
 
         return view("article/view", [
             "results" => $results
