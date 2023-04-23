@@ -40,7 +40,7 @@ function getMinPriceProduct() {
     // find that product object
     minProduct = data.produkte.find((product) => product.preis === minPrice)
 
-    return minProduct
+    return [minProduct.name, minProduct.preis]
 }
 
 function getPriceSum() {
@@ -66,22 +66,35 @@ function getTotalValue() {
 }
 
 function getTotalProductOfCategory() {
-    let toy = 0, garden = 0
+    let toyAmount = 0, gardenAMount = 0
     let result = {}
 
     data.produkte.forEach(function (product) {
         if (product.kategorie === 1)
-            toy = toy + product.anzahl
+            toyAmount = toyAmount + product.anzahl
         else
-            garden = garden + product.anzahl
+            gardenAMount = gardenAMount + product.anzahl
 
     })
 
-    result[data.kategorien[0].name] = toy
-    result[data.kategorien[1].name] = garden
+    result[data.kategorien[0].name] = toyAmount
+    result[data.kategorien[1].name] = gardenAMount
 
     return result
 }
 
-let product = getTotalProductOfCategory()
-console.log(product)
+console.log("getMaxPrice:")
+console.log(getMaxPrice())
+
+console.log("getMinPriceProduct:")
+console.log(getMinPriceProduct())
+
+console.log("getPriceSum:")
+console.log(getPriceSum())
+
+console.log("getTotalValue")
+console.log(getTotalValue())
+
+
+console.log("getTotalProductOfCategory:")
+console.log(getTotalProductOfCategory())
