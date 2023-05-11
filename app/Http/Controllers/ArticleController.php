@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\User;
 use Illuminate\Http\Request;
+use function PHPUnit\Framework\isEmpty;
 
 class ArticleController extends Controller
 {
@@ -60,27 +62,101 @@ class ArticleController extends Controller
 
 
         if ($alreadyExist != 0) // if insert not success then return to create view with error msg
-            return redirect()->route("articleCreate")
-                ->with("fail", "The article '" . $name . "' is already exist. Please try another one.");
-        else {
-            Article::query()
-                ->insert([
-                    "name" => $name,
-                    "price" => $price,
-                    "description" => $description,
-                    "creator_id" => $creator,
-                    "created_at" => now()
-                ]);
-            return redirect()->route("articleView");
+            return response()->json("The article '" . $name . "' is already exist. Please try another one.", 409);
 
-        }
+        Article::query()
+            ->insert([
+                "name" => $name,
+                "price" => $price,
+                "description" => $description,
+                "creator_id" => $creator,
+                "created_at" => now()
+            ]);
+
+        return response()->json("New article successfully created", 201);
     }
 
-    public function view() {
+    public function index() {
         $results = Article::all();
 
-        return view("article/view", [
+        return view("article/index", [
             "results" => $results
             ]);
+    }
+
+    public function searchAPI(Request $request) {
+        $keyword = $request->search;
+
+        if (strlen($keyword) == 0)
+            return response()->json("Empty keyword is not allowed.", 422);
+
+        // ilike for insensitive case
+        $results = Article::where("name", "ilike", "%".strtolower($keyword)."%")
+            ->get();
+
+        if (count($results) == 0)
+            return response()->json("No article found", 404);
+
+        return response()->json($results, 200);
+    }
+
+    public function storeAPI(Request $request) {
+        $creator = $request->user;
+        $name = $request->name;
+        $price = $request->price;
+        $description = $request->description;
+        $nameValidate = str_replace(" ", "", $name);
+
+        if (!$creator)
+            return response()->json("No user was given.", 401);
+
+        $userValid = User::where("id", "=", $creator["id"])->first();
+        if (!$userValid)
+            return response()->json("Invalid user.", 401);
+
+        if (strlen($name) == 0 || !is_int($price) || $price <= 0 || strlen($description) == 0)
+            return response()->json("Invalid input. Please check the article name, price and description again.", 422);
+
+        $alreadyExist = Article::query()
+            ->where("name", "like", $name)
+            ->where("creator_id", "=", $creator["id"])
+            ->count();
+        if ($alreadyExist != 0)
+            return response()->json("Duplicated article.", 409);
+
+        $newArticle = Article::create([
+                "name" => $name,
+                "price" => $price,
+                "description" => $description,
+                "creator_id" => $creator["id"],
+                "created_at" => now()
+            ]);
+
+        return response()->json([
+            "id" => $newArticle->id],
+            201);
+    }
+
+    public function deleteAPI(Request $request, $articleID) {
+        $creator = $request->user;
+
+        if (!$creator)
+            return response()->json("No user was given.", 401);
+
+        $userValid = User::where("id", "=", $creator["id"])->first();
+        if (!$userValid)
+            return response()->json("Invalid user.", 401);
+
+        $article = Article::where("id", "=", $articleID)
+            ->where("creator_id", "=", $creator["id"])->first();
+
+        if (!$article)
+            return response()->json("No article found.", 404);
+
+        if ($article->delete())
+            return response()->json("ArticleID #" . $articleID . " was successfully deleted", 200);
+        else
+            return response()->json("Error happened during delete article. Please try again later", 403);
+
     }
 }

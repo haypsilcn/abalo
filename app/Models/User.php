@@ -47,4 +47,8 @@ class User extends BaseModel
     public function article() {
         return $this->hasMany(Article::class);
     }
+
+    public function shoppingCart() {
+        return $this->hasOne(ShoppingCart::class);
+    }
 }

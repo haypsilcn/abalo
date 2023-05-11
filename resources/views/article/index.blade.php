@@ -8,6 +8,7 @@
         }
     </style>
     <meta charset="UTF-8">
+    <meta id="csrf-token" content="{{ csrf_token() }}">
     <title></title>
 </head>
 <body>
@@ -76,43 +77,98 @@
 
 <script>
     "use strict"
+
+    // get current logged-in user whenever open or refresh page
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "/isloggedin", false)
+
+    xhr.send()
+
+    const userData = xhr.responseText
+    console.log(userData)
+
+    // create shopping cart record for that current logged-in user
+    xhr.open("POST", "/api/shoppingCart", false)
+    xhr.setRequestHeader('Content-Type', 'application/json')
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4)
+            console.log(xhr.responseText)
+    }
+    xhr.send(userData)
+
+    const shoppingCartStatus = xhr.status
+    const shoppingCartData = xhr.responseText
+    console.log(shoppingCartStatus)
+
     const cartTable = document.getElementById("cartTable")
     const articlesTable = document.getElementById("articlesTable")
 
     function shoppingCart(id, name, price, description, username, date, value) {
 
         if (value === "+") {
-            // find and remove to be deleted article from article table
-            document.getElementById("article"+ id).remove()
 
-            // create new row and data cell for name, price and remove button in cart table
-            let newRow = document.createElement("tr")
-            newRow.setAttribute("id", "cart" + id)
+            if (shoppingCartStatus !== 201)
+                alert("Please log in to add article to shopping cart.")
+            else {
+                xhr.open("POST", "/api/shoppingCart/" + id)
+                xhr.setRequestHeader('Content-Type', 'application/json')
 
-            // create data cell for new row in cart table
-            let tdName = document.createElement("td")
-            let tdPrice = document.createElement("td")
-            let tdRemove = document.createElement("td")
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4)
+                        console.log(xhr.responseText)
+                }
+                xhr.send(shoppingCartData)
 
-            // create remove button in cart table
-            let removeButton = document.createElement("input")
-            removeButton.setAttribute("type", "button")
-            removeButton.setAttribute("value", "-")
-            removeButton.setAttribute("onclick", "shoppingCart("
-                + id + ',"' + name.toString() + '",' + price + ',"' + description.toString() + '","' + username.toString() + '","' + date.toString() + '", "-")')
+                // find and remove the to-be-deleted article from article table
+                document.getElementById("article" + id).remove()
 
-            // insert name, price and button into data cell in cart table
-            tdName.appendChild(document.createTextNode(name))
-            tdPrice.appendChild(document.createTextNode(price))
-            tdRemove.appendChild(removeButton)
+                // create new row and data cell for name, price and remove button in cart table
+                let newRow = document.createElement("tr")
+                newRow.setAttribute("id", "cart" + id)
 
-            // complete creating new row for cart table
-            newRow.appendChild(tdName)
-            newRow.appendChild(tdPrice)
-            newRow.appendChild(tdRemove)
+                // create data cell for new row in cart table
+                let tdName = document.createElement("td")
+                let tdPrice = document.createElement("td")
+                let tdRemove = document.createElement("td")
 
-            cartTable.appendChild(newRow) // insert new row to cart table
+                // create remove button in cart table
+                let removeButton = document.createElement("input")
+                removeButton.setAttribute("type", "button")
+                removeButton.setAttribute("value", "-")
+                removeButton.setAttribute("onclick", "shoppingCart("
+                    + id + ',"' + name.toString() + '",' + price + ',"' + description.toString() + '","' + username.toString() + '","' + date.toString() + '", "-")')
+
+                // insert name, price and button into data cell in cart table
+                tdName.appendChild(document.createTextNode(name))
+                tdPrice.appendChild(document.createTextNode(price))
+                tdRemove.appendChild(removeButton)
+
+                // complete creating new row for cart table
+                newRow.appendChild(tdName)
+                newRow.appendChild(tdPrice)
+                newRow.appendChild(tdRemove)
+
+                cartTable.appendChild(newRow) // insert new row to cart table
+            }
+
+
+
         } else {
+
+            // remove article from shoppingCartItem table with api
+            const shoppingCartID = JSON.parse(shoppingCartData).id
+            console.log(shoppingCartID)
+
+            xhr.open("DELETE", "/api/shoppingCart/" + shoppingCartID + "/articles/" + id)
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4)
+                    console.log(xhr.responseText)
+            }
+            xhr.send()
+
+
             // find and remove to be deleted row  in cart table
             document.getElementById("cart" + id).remove()
 
@@ -158,6 +214,22 @@
 
         }
     }
+
+    // add to cart via POST to api
+    /*document.getElementById("add").addEventListener("click", event => {
+        console.log("sne")
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/shoppingCart")
+
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4)
+                console.log(xhr.responseText)
+        }
+        xhr.send()
+        event.preventDefault()
+        return false
+    })*/
 
 </script>
 
