@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3-ajax1-static</title>
+</head>
+
+<body>
+    <div id="msg">
+        <h2>Click to show message</h2>
+        <button type="button" onclick="showMsg()">Show message</button>
+    </div>
+
+    <script>
+        "use strict"
+        function showMsg() {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                const msgJSON = JSON.parse(this.responseText);
+                document.getElementById("msg").innerHTML = msgJSON.message
+            }
+            xhttp.open("GET", "message.json");
+            xhttp.send();
+        }
+    </script>
+</body>
+</html>

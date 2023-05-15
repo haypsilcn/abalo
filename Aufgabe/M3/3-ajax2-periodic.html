@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3-ajax2-periodic</title>
+</head>
+<body>
+
+<div id="msg">
+
+</div>
+
+<script>
+    "use strict"
+    function fetchMsg() {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                const msgJSON = JSON.parse(this.responseText);
+                document.getElementById("msg").innerHTML = msgJSON.message
+            }
+            xhttp.open("GET", "message.json");
+            xhttp.send();
+    }
+
+    setInterval( function () {
+        fetchMsg();
+        console.log("wait 3s");
+    }, 3000)
+
+</script>
+</body>
+</html>
