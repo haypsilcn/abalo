@@ -31,5 +31,8 @@ Route::post("/article", [ArticleController::class, "store"]);
 Route::get("/article", function () {
     return redirect()->route("articleIndex");
 });
+Route::get("/articles", function () {
+    return redirect()->route("articleIndex");
+});
 Route::get("/article/index", [ArticleController::class, "index"])->name("articleIndex");
 

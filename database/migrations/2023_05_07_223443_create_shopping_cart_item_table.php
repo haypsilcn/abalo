@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign("article_id")
                 ->references("id")->on("articles")
                 ->onUpdate("cascade")->onDelete("cascade");
-            $table->timestamp("create_date");
+            $table->timestamp("create_date")->useCurrent();
         });
     }
 

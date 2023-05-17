@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ShoppingCartController;
-use App\Http\Controllers\ShoppingCartItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +24,5 @@ Route::post("/articles", [ArticleController::class, "storeAPI"]);
 Route::delete("/articles/{id}", [ArticleController::class, "deleteAPI"]);
 
 Route::post("/shoppingCart", [ShoppingCartController::class, "storeAPI"]);
-Route::post("/shoppingCart/{shoppingCartID}", [ShoppingCartItemController::class, "storeAPI"]);
-Route::delete("/shoppingCart/{shoppingCartID}/articles/{articleID}", [ShoppingCartItemController::class, "destroyAPI"]);
-
+Route::post("/shoppingCart/{article_id}", [ShoppingCartController::class, "addArticle"]);
+Route::delete("/shoppingCart/{article_id}", [ShoppingCartController::class, "removeArticle"]);

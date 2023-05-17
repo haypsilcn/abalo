@@ -18,4 +18,7 @@ class Article extends BaseModel
         return $this->belongsTo(User::class, "creator_id");
     }
 
+    public function cart() {
+        return $this->belongsToMany(ShoppingCart::class, "shopping_cart_item", "article_id", "shopping_cart_id");
+    }
 }

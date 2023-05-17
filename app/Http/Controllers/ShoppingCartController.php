@@ -2,27 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ShoppingCart;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class ShoppingCartController extends Controller
 {
+    /**
+     * create a shopping cart
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function storeAPI(Request $request) {
-        $name = $request->user;
-        $email = $request->mail;
-
-        $user = User::where("name", "=", $name)->where("email", "=", $email)->first();
+        $user = User::where("name", $request->user)->where("email", $request->mail)->first();
 
         if (!$user)
             return response()->json("No user found", 404);
 
-        if (!ShoppingCart::where("creator_id", "=", $user->id)->exists())
-            ShoppingCart::create([
-                "creator_id" => $user->id,
-                "create_date" => now()
-            ]);
+        if (empty($user->cart))
+            $user->cart()->create();
 
-        return response()->json(ShoppingCart::where("creator_id", "=", $user->id)->first(), 201);
+        return response()->json($user->cart()->first(), 201);
+    }
+
+    public function addArticle(Request $request, $articleID) {
+        $user = User::where("name", $request->user)->where("email", $request->mail)->first();
+
+        if (!$user)
+            return response()->json("No user found", 404);
+
+        if (!$user->cart->items->contains($articleID))
+            $user->cart->items()->attach($articleID);
+
+        return response()->json($user->cart->items()->where("article_id", $articleID)->first(), 201);
+    }
+
+    public function removeArticle(Request $request, $articleID) {
+        $user = User::where("name", $request->user)->where("email", $request->mail)->first();
+
+        if (!$user)
+            return response()->json("No user found", 404);
+
+        if ($user->cart->items->contains($articleID))
+            $user->cart->items()->detach($articleID);
+
+        return response()->json("Article id #" . $articleID . " removed from cart");
     }
 }

@@ -98,8 +98,7 @@
     xhr.send(userData)
 
     const shoppingCartStatus = xhr.status
-    const shoppingCartData = xhr.responseText
-    console.log(shoppingCartStatus)
+    // const shoppingCartData = xhr.responseText
 
     const cartTable = document.getElementById("cartTable")
     const articlesTable = document.getElementById("articlesTable")
@@ -118,7 +117,7 @@
                     if (xhr.readyState === 4)
                         console.log(xhr.responseText)
                 }
-                xhr.send(shoppingCartData)
+                xhr.send(userData)
 
                 // find and remove the to-be-deleted article from article table
                 document.getElementById("article" + id).remove()
@@ -157,16 +156,17 @@
         } else {
 
             // remove article from shoppingCartItem table with api
-            const shoppingCartID = JSON.parse(shoppingCartData).id
-            console.log(shoppingCartID)
+            /*const shoppingCartID = JSON.parse(shoppingCartData).id
+            console.log(shoppingCartID)*/
 
-            xhr.open("DELETE", "/api/shoppingCart/" + shoppingCartID + "/articles/" + id)
+            xhr.open("DELETE", "/api/shoppingCart/" + id)
+            xhr.setRequestHeader('Content-Type', 'application/json')
 
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4)
                     console.log(xhr.responseText)
             }
-            xhr.send()
+            xhr.send(userData)
 
 
             // find and remove to be deleted row  in cart table
@@ -214,22 +214,6 @@
 
         }
     }
-
-    // add to cart via POST to api
-    /*document.getElementById("add").addEventListener("click", event => {
-        console.log("sne")
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/shoppingCart")
-
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4)
-                console.log(xhr.responseText)
-        }
-        xhr.send()
-        event.preventDefault()
-        return false
-    })*/
 
 </script>
 

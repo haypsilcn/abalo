@@ -100,12 +100,15 @@ class ArticleController extends Controller
         return response()->json($results, 200);
     }
 
+    /** store article
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function storeAPI(Request $request) {
         $creator = $request->user;
         $name = $request->name;
         $price = $request->price;
         $description = $request->description;
-        $nameValidate = str_replace(" ", "", $name);
 
         if (!$creator)
             return response()->json("No user was given.", 401);
@@ -137,6 +140,12 @@ class ArticleController extends Controller
             201);
     }
 
+    /**
+     * delete article
+     * @param Request $request
+     * @param $articleID
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deleteAPI(Request $request, $articleID) {
         $creator = $request->user;
 

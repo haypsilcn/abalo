@@ -45,10 +45,14 @@ class User extends BaseModel
 //    ];
 
     public function article() {
-        return $this->hasMany(Article::class);
+        return $this->hasMany(Article::class, "creator_id");
     }
 
-    public function shoppingCart() {
-        return $this->hasOne(ShoppingCart::class);
+    public function cart() {
+        return $this->hasOne(ShoppingCart::class, "creator_id");
+    }
+
+    public function items() {
+        return $this->hasManyThrough(Article::class, ShoppingCart::class);
     }
 }
