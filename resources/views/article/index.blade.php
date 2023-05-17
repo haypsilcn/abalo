@@ -98,7 +98,6 @@
     xhr.send(userData)
 
     const shoppingCartStatus = xhr.status
-    // const shoppingCartData = xhr.responseText
 
     const cartTable = document.getElementById("cartTable")
     const articlesTable = document.getElementById("articlesTable")
@@ -155,10 +154,6 @@
 
         } else {
 
-            // remove article from shoppingCartItem table with api
-            /*const shoppingCartID = JSON.parse(shoppingCartData).id
-            console.log(shoppingCartID)*/
-
             xhr.open("DELETE", "/api/shoppingCart/" + id)
             xhr.setRequestHeader('Content-Type', 'application/json')
 
@@ -167,7 +162,6 @@
                     console.log(xhr.responseText)
             }
             xhr.send(userData)
-
 
             // find and remove to be deleted row  in cart table
             document.getElementById("cart" + id).remove()
