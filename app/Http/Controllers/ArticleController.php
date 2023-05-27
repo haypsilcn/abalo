@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use function PHPUnit\Framework\isEmpty;
 
 class ArticleController extends Controller
 {
-    public function articleImg() {
+    private function articleImg() {
 
         $files = \File::files("img/articelimages");
         $images = [];
@@ -22,23 +23,9 @@ class ArticleController extends Controller
 
         return $images;
     }
-    public function search(Request $request) {
 
-        // get keyword from input with name="search" from article.blade.php
-        $keyword = $request->search;
-
-        // ilike for insensitive case
-        $results = Article::query()
-            ->where("name", "ilike", "%".strtolower($keyword)."%")
-            ->get();
-
-        $images = $this->articleImg();
-
-        return view("article/search", [
-            "results" => $results,
-            "keyword" => $keyword,
-            "images" => $images,
-        ]);
+    public function search() {
+        return view("article/search");
     }
 
     public function create() {
@@ -84,20 +71,58 @@ class ArticleController extends Controller
             ]);
     }
 
+    /**
+     * trigger while typing in search box
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function searchAPI(Request $request) {
         $keyword = $request->search;
+        $quickSearch = $request->quickSearch;
+        $skipped = $request->currentPage - 1;
 
         if (strlen($keyword) == 0)
             return response()->json("Empty keyword is not allowed.", 422);
 
         // ilike for insensitive case
-        $results = Article::where("name", "ilike", "%".strtolower($keyword)."%")
-            ->get();
+
+            $results = Article::where("name", "ilike", "%".strtolower($keyword)."%")
+                ->orderBy("id")->take(5)->get();
+        if (!$quickSearch) {
+            $total = Article::where("name", "ilike", "%".strtolower($keyword)."%")
+                ->orderBy("id")->get();
+            $results = Article::where("name", "ilike", "%".strtolower($keyword)."%")
+                ->orderBy("id")->skip($skipped * 5)->take(5)->get();
+//            $results["total"] = count($total);
+        }
+
+//        return response()->json(compact("results"));
+
+
+        $images = $this->articleImg();
+
+        $results = $results->map(function ($result) use ($images) {
+            // change the creator id in column 'creator_id' into creator name
+            $result->creator_id = User::find($result->creator_id)->name;
+
+            // fix img path to correct form if image path exist
+            // else set path = ""
+            $result["image"] = isset($images[$result->id]) ? ("/" . str_replace("\\", "/", $images[$result->id])) : "";
+
+            return $result;
+        });
 
         if (count($results) == 0)
             return response()->json("No article found", 404);
 
-        return response()->json($results, 200);
+        if ($quickSearch)
+            return response()->json($results);
+        else {
+            return response()->json([
+                "results" => $results,
+                "pages" => ceil(count($total)/5)]);
+        }
+
     }
 
     /** store article

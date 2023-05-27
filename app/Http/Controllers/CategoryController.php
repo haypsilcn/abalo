@@ -16,4 +16,10 @@ class CategoryController extends Controller
             "categories" => $categories
         ]);
     }
+
+    public function showCategories() {
+        return response()->json(
+            Category::query()->select("name")->get()
+        );
+    }
 }

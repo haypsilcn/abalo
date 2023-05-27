@@ -1,18 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Article Search</title>
+    <title>New Site</title>
 </head>
 <body>
-
     <div id="app">
         <div>
-            <Search></Search>
+            <Site-Header></Site-Header>
+            <Site-Body></Site-Body>
+            <Site-Footer></Site-Footer>
         </div>
+
     </div>
 
     @vite('resources/js/app.js')
 </body>
 </html>
-

@@ -20,6 +20,9 @@ Route::get('/', function () {
 });
 
 Route::get("/layout",[CategoryController::class, "showAllCategories"])->name("showCategory");
+Route::get("/homepage", function () {
+    return view("homepage");
+});
 
 Route::get('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login');
 Route::get('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');

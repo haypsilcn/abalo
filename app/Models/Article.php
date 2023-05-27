@@ -21,4 +21,8 @@ class Article extends BaseModel
     public function cart() {
         return $this->belongsToMany(ShoppingCart::class, "shopping_cart_item", "article_id", "shopping_cart_id");
     }
+
+    public function category() {
+        return $this->belongsToMany(Category::class, "article_has_category", "article_id", "category_id");
+    }
 }
