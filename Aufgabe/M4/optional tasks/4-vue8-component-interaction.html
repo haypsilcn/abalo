@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>4-vue8-component-interaction</title>
+</head>
+<body>
+<!--    <div id="app">
+        <ComponentA></ComponentA>
+    </div>
+
+    <script type="module">
+        import ComponentA from './vue-components/counter.js'
+
+        let vm = Vue.createApp({
+            components: {
+                ComponentA
+            }
+        }).mount('#app')
+    </script>-->
+<div id="app">
+    <Component-A></Component-A>
+</div>
+
+<script type="module">
+    import ComponentA from './vue-components/component-a.js'
+
+    let vm = Vue.createApp({
+        components: {
+            ComponentA
+        },
+    }).mount('#app');
+</script>
+</body>
+</html>

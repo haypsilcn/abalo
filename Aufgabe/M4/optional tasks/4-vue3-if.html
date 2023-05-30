@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>4-vue3-if</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h3 v-on:click="serverDown = !serverDown">
+            {{ serverDown ? "Der Webserver ist zurzeit nicht erreichbar" : "Der Webserver ist erreichbar"}}
+        </h3>
+    </div>
+
+<script>
+    let vm = Vue.createApp({
+        data() {
+            return {
+                serverDown: true
+            }
+        }
+    }).mount("#app")
+</script>
+
+</body>
+</html>

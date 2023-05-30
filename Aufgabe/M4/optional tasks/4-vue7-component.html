@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>4-vue7-component</title>
+</head>
+<body>
+    <div id="app">
+        <Counter></Counter>
+    </div>
+
+    <script type="module">
+        import Counter from './vue-components/counter.js'
+
+        let vm = Vue.createApp({
+            components: {
+                Counter
+            },
+        }).mount('#app');
+    </script>
+</body>
+</html>

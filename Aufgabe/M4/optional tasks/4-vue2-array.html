@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>4-vue2-array</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+            </tr>
+            <tr v-for="obj in objects" :key="obj.name" v-on:click="objects.push({'name':'Radio – UKW', 'price':45})">
+                <td> {{ obj.name }}</td>
+                <td> {{ obj.price }}</td>
+            </tr>
+        </table>
+    </div>
+
+<script>
+    let vm = Vue.createApp({
+        data() {
+            return {
+                objects: [
+                    {name: "Reifen", price: 8290},
+                    {name: "Antenne drehbar. Leicht geknickt", price: 1400},
+                    {name: "Opel Kadett C 1992 – wie neu", price: 150000},
+                ]
+            }
+        }
+    }).mount("#app")
+</script>
+
+</body>
+</html>
