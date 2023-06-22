@@ -25,8 +25,7 @@ Route::post("/articles/search", [ArticleController::class, "searchAPI"]);
 Route::post("/articles", [ArticleController::class, "storeAPI"]);
 Route::delete("/articles/{id}", [ArticleController::class, "deleteAPI"]);
 Route::post("/article/{id}/sold", [ArticleController::class, "sold"]);
-Route::get("articles/index", [ArticleController::class, "indexAPI"]);
-Route::get("index", [ArticleController::class, "indexAPI"]);
+Route::post("/article/{id}/discount", [ArticleController::class, "discount"]);
 
 
 Route::get("/categories", [CategoryController::class, "showCategories"]);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 
@@ -17,13 +18,15 @@ class SocketController extends Controller implements MessageComponentInterface
 
     public function onOpen(ConnectionInterface $conn)
     {
-        echo "Adding new connection\n";
+        echo "New connection has established\n";
         $this->clients->attach($conn);
     }
 
     public function onMessage(ConnectionInterface $from, $msg)
     {
-        echo "Received: $msg\n";
+        $data = json_decode($msg);
+        echo "New " . $data->type . " event\n";
+        echo "Item: " . json_encode($data->item) . "\n";
         foreach ($this->clients as $client) {
             if ($from != $client) {
                 $client->send($msg);
@@ -33,13 +36,13 @@ class SocketController extends Controller implements MessageComponentInterface
 
     public function onClose(ConnectionInterface $conn)
     {
-        echo "Closing connection\n";
+        echo "A connection has closed\n";
         $this->clients->detach($conn);
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
-        echo "Closing connection with error\n";
+        echo "A connection has corrupted\n";
         $conn->close();
     }
 }

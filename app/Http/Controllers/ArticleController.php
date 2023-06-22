@@ -64,15 +64,15 @@ class ArticleController extends Controller
 
     public function index() {
         $results = Article::all();
-//        $user = User::where("name", Session::get("user"))->first();
-//        $cart = $user->cart->items->first()->id;
 
         if (Session::has("user")) {
             $user = User::where("name", Session::get("user"))->first();
             $itemsInCart = $user->cart->items;
+            $userItems = Article::where("creator_id", $user->id)->get();
             $results = Article::where("creator_id", "!=", $user->id)
                 ->whereNotIn("id", $itemsInCart->pluck("id"))->get();
             return view("article/index", [
+                "userItems" => $userItems,
                 "results" => $results,
                 "itemsInCart" => $itemsInCart
             ]);
@@ -84,11 +84,14 @@ class ArticleController extends Controller
             ]);
     }
 
-    public function indexAPI() {
-        return response()->json(Article::select("name")->get());
+    public function sold(Request $request) {
+        $item = Article::find($request->id);
+        $data = $item->toArray();
+        $data["username"] = $item->user->name;
+        return response()->json($data);
     }
 
-    public function sold(Request $request) {
+    public function discount(Request $request) {
         $item = Article::find($request->id);
         $data = $item->toArray();
         $data["username"] = $item->user->name;
@@ -117,11 +120,7 @@ class ArticleController extends Controller
                 ->orderBy("id")->get();
             $results = Article::where("name", "ilike", "%".strtolower($keyword)."%")
                 ->orderBy("id")->skip($skipped * 5)->take(5)->get();
-//            $results["total"] = count($total);
         }
-
-//        return response()->json(compact("results"));
-
 
         $images = $this->articleImg();
 

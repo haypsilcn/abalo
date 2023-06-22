@@ -29,7 +29,7 @@ Route::get("/homepage/", function () {
 })->name("homepage");
 
 Route::get("/login", function () {
-    return Session::has("user") ?  redirect("index") : view("login");
+    return Session::has("user") ?  redirect("homepage") : view("login");
 });
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login');
 Route::get('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');

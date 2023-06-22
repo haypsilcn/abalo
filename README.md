@@ -7,6 +7,15 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+# Note for M5
+- A5 not working
+- Commands to run websocket server
+
+```bash
+composer require cboden/ratchet
+php artisan websocket:run
+```
+
 ## About Practical Training
 
 The online marketplace Abalo is an online flea market where users can buy and sell used items and items. A seller lists his items for sale and sets a price. Other users can view this item, ask questions and buy it.
