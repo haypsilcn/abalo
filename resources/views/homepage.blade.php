@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>New Site</title>
+    <title>Homepage</title>
 </head>
 <body>
     <div id="app">
@@ -16,4 +16,12 @@
 
     @vite('resources/js/app.js')
 </body>
+
+<script>
+    const connection = new WebSocket("ws://localhost:8000/");
+    connection.onopen = function() {
+        console.log("Connection established");
+    };
+
+</script>
 </html>

@@ -1,6 +1,7 @@
 <template>
 
-    <div><a href="#">Home</a></div>
+    <div><a href="/homepage">Home</a></div>
+    <div><a href="/article">Article list</a></div>
     <div>
         <a href="#" @click="showCategories = !showCategories">Kategorie</a>
         <ul v-if="showCategories">
@@ -18,11 +19,22 @@
         </ul>
     </div>
     <br>
+    <div>
+        <vue-dock-menu :items="items" dock="RIGHT">
+        </vue-dock-menu>
+    </div>
+
 </template>
 
 <script>
+import { DockMenu } from "vue-dock-menu";
+import "vue-dock-menu/dist/vue-dock-menu.css";
+
 export default {
     name: "Menu",
+    components: {
+        DockMenu
+    },
     created() {
         this.getCategories()
     },
@@ -30,7 +42,17 @@ export default {
         return {
             categories: [],
             showCategories: false,
-            showUnternehmen: false
+            showUnternehmen: false,
+            items: [
+                {
+                    name: "File",
+                    menu: [{ name: "Open"}, {name: "New Window"}, {name: "Exit"}]
+                },
+                {
+                    name: "Edit",
+                    menu: [{ name: "Cut"}, {name: "Copy"}, {name: "Paste"}]
+                }
+            ]
         }
     },
     methods: {

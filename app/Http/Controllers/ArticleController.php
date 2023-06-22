@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use function PHPUnit\Framework\isEmpty;
+use Illuminate\Support\Facades\Session;
 
 class ArticleController extends Controller
 {
@@ -40,7 +39,7 @@ class ArticleController extends Controller
         // bypass not-null constraint on creator_id & description
         if (strlen($description) == 0)
             $description = "";
-        $creator = 2;
+        $creator = User::where("name", Session::get("user"))->first()->id;
 
         $alreadyExist = Article::query()
             ->where("name", "like", $name)
@@ -65,10 +64,35 @@ class ArticleController extends Controller
 
     public function index() {
         $results = Article::all();
+//        $user = User::where("name", Session::get("user"))->first();
+//        $cart = $user->cart->items->first()->id;
+
+        if (Session::has("user")) {
+            $user = User::where("name", Session::get("user"))->first();
+            $itemsInCart = $user->cart->items;
+            $results = Article::where("creator_id", "!=", $user->id)
+                ->whereNotIn("id", $itemsInCart->pluck("id"))->get();
+            return view("article/index", [
+                "results" => $results,
+                "itemsInCart" => $itemsInCart
+            ]);
+        } else
 
         return view("article/index", [
-            "results" => $results
+            "results" => $results,
+            "itemsInCart" => "not logged in"
             ]);
+    }
+
+    public function indexAPI() {
+        return response()->json(Article::select("name")->get());
+    }
+
+    public function sold(Request $request) {
+        $item = Article::find($request->id);
+        $data = $item->toArray();
+        $data["username"] = $item->user->name;
+        return response()->json($data);
     }
 
     /**
